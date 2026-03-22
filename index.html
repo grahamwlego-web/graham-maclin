@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Graham Maclin — Author</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&family=Josefin+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f5efe4;
+    --parchment: #ede3d0;
+    --warm-brown: #3d2b1f;
+    --mid-brown: #6b4c35;
+    --amber: #c4813a;
+    --rust: #9e4a2a;
+    --ink: #1e1410;
+    --muted: #8a7060;
+    --light-muted: #b5a090;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--cream);
+    color: var(--warm-brown);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.4rem 4rem;
+    background: rgba(245,239,228,0.88);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(61,43,31,0.1);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 300;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink); text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: 'Josefin Sans', sans-serif; font-size: 0.7rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--mid-brown); text-decoration: none; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--amber); }
+
+  .hero {
+    min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr;
+    padding-top: 80px; position: relative; overflow: hidden;
+  }
+  .hero-left {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 6rem 4rem 6rem 6rem; position: relative; z-index: 2;
+  }
+  .hero-eyebrow {
+    font-family: 'Josefin Sans', sans-serif; font-size: 0.65rem;
+    letter-spacing: 0.3em; text-transform: uppercase; color: var(--amber);
+    margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif; font-size: clamp(4rem,7vw,7rem);
+    font-weight: 300; line-height: 1.0; color: var(--ink);
+    margin-bottom: 1rem; opacity: 0; animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+  .hero-title em { font-style: italic; color: var(--rust); }
+  .hero-tagline {
+    font-family: 'Crimson Pro', serif; font-size: 1.15rem; font-style: italic;
+    color: var(--muted); margin-bottom: 3rem; max-width: 380px;
+    opacity: 0; animation: fadeUp 0.8s ease forwards 0.6s;
+  }
+  .hero-cta { display: inline-flex; gap: 1.5rem; opacity: 0; animation: fadeUp 0.8s ease forwards 0.8s; }
+  .btn-primary {
+    font-family: 'Josefin Sans', sans-serif; font-size: 0.68rem;
+    letter-spacing: 0.2em; text-transform: uppercase; padding: 0.85rem 2rem;
+    background: var(--warm-brown); color: var(--cream); text-decoration: none;
+    border: none; cursor: pointer; transition: background 0.25s, transform 0.2s; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--rust); transform: translateY(-2px); }
+  .btn-secondary {
+    font-family: 'Josefin Sans', sans-serif; font-size: 0.68rem;
+    letter-spacing: 0.2em; text-transform: uppercase; padding: 0.85rem 2rem;
+    background: transparent; color: var(--warm-brown); text-decoration: none;
+    border: 1px solid var(--warm-brown); cursor: pointer; transition: all 0.25s; display: inline-block;
+  }
+  .btn-secondary:hover { background: var(--warm-brown); color: var(--cream); transform: translateY(-2px); }
+
+  .hero-right {
+    position: relative; display: flex; align-items: center; justify-content: center;
+    padding: 4rem 4rem 4rem 2rem; opacity: 0; animation: fadeIn 1.2s ease forwards 0.5s;
+  }
+  .hero-deco {
+    position: absolute; right: -60px; top: 10%; width: 500px; height: 500px;
+    border-radius: 50%; background: radial-gradient(circle, rgba(196,129,58,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .book-stack { position: relative; width: 260px; height: 380px; }
+  .book {
+    position: absolute; border-radius: 3px 8px 8px 3px;
+    box-shadow: 4px 6px 20px rgba(61,43,31,0.2);
+  }
+  .bspine {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 18px; border-radius: 3px 0 0 3px;
+  }
+  .b1 { width: 200px; height: 270px; background: #5a3060; bottom: 0; left: 30px; transform: rotate(-4deg); }
+  .b2 { width: 185px; height: 250px; background: #1e2d1e; bottom: 10px; left: 55px; transform: rotate(3deg); }
+  .b3 { width: 175px; height: 230px; background: #7a3a1a; bottom: 25px; left: 70px; transform: rotate(-1deg); }
+  .btitle {
+    position: absolute; top: 35px; right: 18px; left: 26px;
+    font-family: 'Cormorant Garamond', serif; font-size: 0.95rem;
+    font-style: italic; text-align: center; line-height: 1.3;
+  }
+  .bdeco {
+    position: absolute; bottom: 30px; left: 28px; right: 20px;
+    height: 1px; background: rgba(255,255,255,0.2);
+  }
+
+  section { padding: 6rem 6rem; }
+  .section-label {
+    font-family: 'Josefin Sans', sans-serif; font-size: 0.65rem;
+    letter-spacing: 0.3em; text-transform: uppercase; color: var(--amber); margin-bottom: 0.6rem;
+  }
+  .section-heading {
+    font-family: 'Cormorant Garamond', serif; font-size: clamp(2.2rem,4vw,3.4rem);
+    font-weight: 300; line-height: 1.1; color: var(--ink); margin-bottom: 1rem;
+  }
+  .section-heading em { font-style: italic; color: var(--rust); }
+
+  #books { background: var(--parchment); position: relative; overflow: hidden; }
+  #books::before {
+    content: ''; position: absolute; top: -80px; left: -80px; width: 400px; height: 400px;
+    border-radius: 50%; background: radial-gradient(circle, rgba(196,129,58,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .books-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4rem; }
+  .books-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2.5rem; }
+  .book-card { cursor: pointer; transition: transform 0.3s ease; }
+  .book-card:hover { transform: translateY(-8px); }
+  .book-card-cover {
+    width: 100%; aspect-ratio: 2/3; border-radius: 4px 10px 10px 4px;
+    margin-bottom: 1.2rem; position: relative; overflow: hidden;
+    box-shadow: 6px 10px 30px rgba(61,43,31,0.2);
+  }
+  .book-card-cover-inner {
+    width: 100%; height: 100%; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; padding: 2rem 1.5rem;
+    text-align: center; position: relative;
+  }
+  .cspine { position: absolute; left: 0; top: 0; bottom: 0; width: 14px; border-radius: 3px 0 0 3px; }
+  .cover-title {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.45rem;
+    font-style: italic; line-height: 1.25; margin-bottom: 0.6rem;
+  }
+  .cover-author {
+    font-family: 'Josefin Sans', sans-serif; font-size: 0.58rem;
+    letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.75;
+  }
+  .cover-line { width: 40px; height: 1px; margin: 0.8rem auto; opacity: 0.35; }
+  .book-card-meta { display: flex; gap: 0.8rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+  .tag {
+    font-family: 'Josefin Sans', sans-serif; font-size: 0.58rem;
+    letter-spacing: 0.15em; text-transform: uppercase; padding: 0.25rem 0.6rem;
+    border: 1px solid var(--light-muted); color: var(--muted); border-radius: 2px;
+  }
+  .book-card h3 {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;
+    font-weight: 400; color: var(--ink); margin-bottom: 0.4rem;
+  }
+  .book-card p { font-size: 0.92rem; color: var(--muted); line-height: 1.6; margin-bottom: 1rem; }
+  .book-link {
+    font-family: 'Josefin Sans', sans-serif; font-size: 0.62rem;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--amber);
+    text-decoration: none; border-bottom: 1px solid rgba(196,129,58,0.4);
+    padding-bottom: 2px; transition: color 0.2s, border-color 0.2s;
+  }
+  .book-link:hover { color: var(--rust); border-color: var(--rust); }
+
+  #about { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+  .about-portrait { position: relative; }
+  .portrait-frame {
+    width: 100%; aspect-ratio: 3/4; background: var(--parchment);
+    border: 1px solid rgba(61,43,31,0.15); position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .portrait-placeholder { font-family: 'Cormorant Garamond', serif; font-size: 5rem; color: var(--light-muted); font-style: italic; }
+  .portrait-caption {
+    position: absolute; bottom: 1.5rem; right: -1.5rem;
+    background: var(--warm-brown); color: var(--cream);
+    padding: 1rem 1.5rem; font-family: 'Josefin Sans', sans-serif;
+    font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+  }
+  .portrait-deco {
+    position: absolute; top: -1.5rem; left: -1.5rem;
+    width: 80px; height: 80px;
+    border-top: 2px solid var(--amber); border-left: 2px solid var(--amber);
+  }
+  .about-text .section-heading { margin-bottom: 1.5rem; }
+  .about-text p { color: var(--mid-brown); margin-bottom: 1.2rem; font-size: 1.05rem; }
+  .about-quote {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-style: italic;
+    color: var(--rust); border-left: 3px solid var(--amber);
+    padding-left: 1.5rem; margin: 2rem 0; line-height: 1.5;
+  }
+
+  #blog { background: var(--parchment); }
+  .blog-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; }
+  .blog-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2rem; }
+  .blog-card {
+    padding: 2rem; background: var(--cream);
+    border: 1px solid rgba(61,43,31,0.1);
+    transition: box-shadow 0.3s, transform 0.3s; cursor: pointer;
+  }
+  .blog-card:hover { box-shadow: 0 12px 40px rgba(61,43,31,0.12); transform: translateY(-4px); }
+  .blog-date {
+    font-family: 'Josefin Sans', sans-serif; font-size: 0.6rem;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--light-muted); margin-bottom: 0.8rem;
+  }
+  .blog-card h3 {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.4rem;
+    font-weight: 400; color: var(--ink); line-height: 1.3; margin-bottom: 0.8rem;
+  }
+  .blog-card.small h3 { font-size: 1.15rem; }
+  .blog-card p { font-size: 0.95rem; color: var(--muted); line-height: 1.65; margin-bottom: 1.2rem; }
+
+  footer {
+    background: var(--ink); color: var(--parchment);
+    padding: 4rem 6rem; display: grid;
+    grid-template-columns: 1fr 1fr 1fr; gap: 3rem; align-items: start;
+  }
+  .footer-brand { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; color: var(--cream); margin-bottom: 0.5rem; }
+  .footer-tagline { font-family: 'Crimson Pro', serif; font-style: italic; font-size: 0.95rem; color: var(--light-muted); }
+  .footer-heading { font-family: 'Josefin Sans', sans-serif; font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--amber); margin-bottom: 1.2rem; }
+  footer ul { list-style: none; }
+  footer ul li { margin-bottom: 0.5rem; }
+  footer ul a { font-family: 'Crimson Pro', serif; font-size: 1rem; color: var(--light-muted); text-decoration: none; transition: color 0.2s; }
+  footer ul a:hover { color: var(--amber); }
+  .footer-newsletter input {
+    width: 100%; padding: 0.75rem 1rem;
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15);
+    color: var(--cream); font-family: 'Crimson Pro', serif; font-size: 1rem;
+    margin-bottom: 0.75rem; outline: none; transition: border-color 0.2s;
+  }
+  .footer-newsletter input:focus { border-color: var(--amber); }
+  .footer-newsletter input::placeholder { color: var(--muted); }
+  .footer-newsletter button {
+    width: 100%; padding: 0.75rem; background: var(--amber); color: var(--ink);
+    font-family: 'Josefin Sans', sans-serif; font-size: 0.65rem;
+    letter-spacing: 0.2em; text-transform: uppercase; border: none; cursor: pointer; transition: background 0.25s;
+  }
+  .footer-newsletter button:hover { background: var(--rust); color: var(--cream); }
+  .footer-bottom {
+    background: var(--ink); border-top: 1px solid rgba(255,255,255,0.07);
+    padding: 1.2rem 6rem; display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-bottom p { font-family: 'Josefin Sans', sans-serif; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 2rem; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .hero-left { padding: 4rem 2rem; }
+    section { padding: 4rem 2rem; }
+    #about { grid-template-columns: 1fr; gap: 3rem; }
+    .books-grid { grid-template-columns: 1fr 1fr; }
+    .blog-grid { grid-template-columns: 1fr; }
+    footer { grid-template-columns: 1fr; padding: 3rem 2rem; }
+    .footer-bottom { padding: 1rem 2rem; flex-direction: column; gap: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">Graham Maclin</a>
+  <ul class="nav-links">
+    <li><a href="#books">Books</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#blog">Journal</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hero-left">
+    <p class="hero-eyebrow">Adventure · Mystery · Fantasy</p>
+    <h1 class="hero-title">Graham<br><em>Maclin</em></h1>
+    <p class="hero-tagline">Stories full of Sith lords, raccoon attacks, and flying cats — imagination with no limits.</p>
+    <div class="hero-cta">
+      <a href="#books" class="btn-primary">Browse Books</a>
+      <a href="#about" class="btn-secondary">About the Author</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-deco"></div>
+    <div class="book-stack">
+      <div class="book b3">
+        <div class="bspine" style="background:#5a2a0e;"></div>
+        <div class="btitle" style="color:rgba(255,220,175,0.9);">Super Kitty &amp; Good Dog Ginger</div>
+        <div class="bdeco"></div>
+      </div>
+      <div class="book b2">
+        <div class="bspine" style="background:#121e12;"></div>
+        <div class="btitle" style="color:rgba(190,230,190,0.9);">Terror in the Dark</div>
+        <div class="bdeco"></div>
+      </div>
+      <div class="book b1">
+        <div class="bspine" style="background:#3a1a48;"></div>
+        <div class="btitle" style="color:rgba(230,200,255,0.9);">Jar Jar's Revenge</div>
+        <div class="bdeco"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="books">
+  <div class="books-header reveal">
+    <div>
+      <p class="section-label">On the Shelf</p>
+      <h2 class="section-heading">The <em>Books</em></h2>
+    </div>
+  </div>
+  <div class="books-grid">
+
+    <div class="book-card reveal">
+      <div class="book-card-cover">
+        <div class="book-card-cover-inner" style="background:#5a3060;">
+          <div class="cspine" style="background:#3a1a48;"></div>
+          <div class="cover-line" style="background:rgba(220,180,255,0.4);"></div>
+          <div class="cover-title" style="color:rgba(235,210,255,0.95);">Jar Jar's Revenge</div>
+          <div class="cover-line" style="background:rgba(220,180,255,0.4);"></div>
+          <div class="cover-author" style="color:rgba(220,180,255,0.7);">Graham Maclin</div>
+        </div>
+      </div>
+      <div class="book-card-meta">
+        <span class="tag">Sci-Fi</span><span class="tag">Adventure</span><span class="tag">Fantasy</span>
+      </div>
+      <h3>Jar Jar's Revenge</h3>
+      <p>Hundreds of years ago, a weird creature named Jar Jar wanted revenge, so he avenged. Coming from the Pulitzer Prize-winning Graham Maclin, dive into a story of commitment, stealth, and revenge.</p>
+      <a href="store-jarjar.html" class="book-link">Order Now →</a>
+    </div>
+
+    <div class="book-card reveal" style="transition-delay:0.1s">
+      <div class="book-card-cover">
+        <div class="book-card-cover-inner" style="background:#1e2d1e;">
+          <div class="cspine" style="background:#121e12;"></div>
+          <div class="cover-line" style="background:rgba(160,210,160,0.4);"></div>
+          <div class="cover-title" style="color:rgba(190,230,190,0.95);">Terror in the Dark</div>
+          <div class="cover-line" style="background:rgba(160,210,160,0.4);"></div>
+          <div class="cover-author" style="color:rgba(160,210,160,0.7);">Graham Maclin</div>
+        </div>
+      </div>
+      <div class="book-card-meta">
+        <span class="tag">Thriller</span><span class="tag">Mystery</span>
+      </div>
+      <h3>Terror in the Dark</h3>
+      <p>You better run. You can't hide from the surprisingly realistic tale of two boys locked out of the house while raccoons close in. From Booker Award-winning Graham Maclin, another thriller that will have you checking your locks a second time.</p>
+      <a href="store-terror.html" class="book-link">Order Now →</a>
+    </div>
+
+    <div class="book-card reveal" style="transition-delay:0.2s">
+      <div class="book-card-cover">
+        <div class="book-card-cover-inner" style="background:#7a3a1a;">
+          <div class="cspine" style="background:#5a2a0e;"></div>
+          <div class="cover-line" style="background:rgba(255,210,160,0.4);"></div>
+          <div class="cover-title" style="color:rgba(255,225,185,0.95);">Super Kitty &amp; Good Dog Ginger</div>
+          <div class="cover-line" style="background:rgba(255,210,160,0.4);"></div>
+          <div class="cover-author" style="color:rgba(255,210,160,0.7);">Graham Maclin</div>
+        </div>
+      </div>
+      <div class="book-card-meta">
+        <span class="tag">Fantasy</span><span class="tag">Adventure</span>
+      </div>
+      <h3>Super Kitty &amp; Good Dog Ginger</h3>
+      <p>Fly into a super read with Graham Maclin's Super Kitty and Good Dog Ginger! A book that will have you flying alongside them from a Nobel Prize for Literature winner — it's Super Kitty and Good Dog Ginger!</p>
+      <a href="store-superkitty.html" class="book-link">Order Now →</a>
+    </div>
+
+    <div class="book-card reveal" style="transition-delay:0.3s">
+      <div class="book-card-cover">
+        <div class="book-card-cover-inner" style="background:#2a1a2e;">
+          <div class="cspine" style="background:#1a0a1e;"></div>
+          <div style="position:absolute;top:1rem;right:1rem;background:var(--rust);color:var(--cream);font-family:'Josefin Sans',sans-serif;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.25rem 0.6rem;border-radius:2px;">New</div>
+          <div class="cover-line" style="background:rgba(200,170,255,0.4);"></div>
+          <div class="cover-title" style="color:rgba(220,200,255,0.95);">Terror in the Dark Part 3</div>
+          <div class="cover-line" style="background:rgba(200,170,255,0.4);"></div>
+          <div class="cover-author" style="color:rgba(200,170,255,0.7);">Graham Maclin</div>
+        </div>
+      </div>
+      <div class="book-card-meta">
+        <span class="tag">Thriller</span><span class="tag">Series</span><span class="tag" style="background:rgba(158,74,42,0.1);border-color:var(--rust);color:var(--rust);">New</span>
+      </div>
+      <h3>Terror in the Dark Part 3</h3>
+      <p>EP is back, the raccoons have uranium guns, and Bob and Josh are surrounded on the street where Josh's mom was taken. The most terrifying chapter yet.</p>
+      <a href="store-terror3.html" class="book-link">Order Now →</a>
+    </div>
+
+  </div>
+</section>
+
+<section id="about">
+  <div class="about-portrait reveal">
+    <div class="portrait-deco"></div>
+    <div class="portrait-frame">
+      <div class="portrait-placeholder">GM</div>
+    </div>
+    <div class="portrait-caption">Graham Maclin — Author</div>
+  </div>
+  <div class="about-text reveal" style="transition-delay:0.15s">
+    <p class="section-label">The Author</p>
+    <h2 class="section-heading">A <em>Word</em><br>About Graham</h2>
+    <blockquote class="about-quote">"Every story begins with a question I can't stop asking myself."</blockquote>
+    <p>Graham Maclin is a well-known author of <em>Terror in the Dark</em> and <em>Jar Jar's Revenge</em>. His work spans science fiction, thriller, and fantasy — united by fast-moving plots, bold heroes, and a sense of adventure that never lets up.</p>
+    <p>When he's not writing, Graham loves playing football, bouncing on his trampoline, and diving into a good book. He lives in Virginia with his family.</p>
+    <br>
+    <a href="#contact" class="btn-primary">Get in Touch</a>
+  </div>
+</section>
+
+<section id="blog">
+  <div class="blog-header reveal">
+    <div>
+      <p class="section-label">Thoughts &amp; Updates</p>
+      <h2 class="section-heading">From the <em>Journal</em></h2>
+    </div>
+  </div>
+  <div class="blog-grid">
+    <div class="blog-card featured reveal">
+      <p class="blog-date" style="color:var(--rust);">New · March 21, 2026</p>
+      <h3>Terror in the Dark Part 3 is Here</h3>
+      <p>EP is back, raccoons are dropping from the sky, and Hangman Lane holds a secret that changes everything. A behind-the-scenes look at the newest book.</p>
+      <a href="blog-terror3.html" class="book-link">Read More →</a>
+    </div>
+    <div class="blog-card small reveal" style="transition-delay:0.1s">
+      <p class="blog-date">March 14, 2026</p>
+      <h3>Behind the Story: Writing Jar Jar's Revenge</h3>
+      <p>Two timelines, a galaxy in chaos, and the question that started it all.</p>
+      <a href="blog-jarjar.html" class="book-link">Read More →</a>
+    </div>
+    <div class="blog-card small reveal" style="transition-delay:0.2s">
+      <p class="blog-date">February 28, 2026</p>
+      <h3>How a Raccoon Attack Became a Story</h3>
+      <p>The origin of <em>Terror in the Dark</em> — and what really happened that night in Miami.</p>
+      <a href="blog-terror.html" class="book-link">Read More →</a>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div>
+    <div class="footer-brand">Graham Maclin</div>
+    <div class="footer-tagline">Adventure · Mystery · Fantasy</div>
+  </div>
+  <div>
+    <p class="footer-heading">Navigate</p>
+    <ul>
+      <li><a href="#books">Books</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#blog">Journal</a></li>
+    </ul>
+  </div>
+  <div class="footer-newsletter">
+    <p class="footer-heading">Stay in Touch</p>
+    <p style="font-size:0.9rem;color:#8a7060;margin-bottom:1rem;font-family:'Crimson Pro',serif;font-style:italic;">New books, updates, and stories — straight to your inbox.</p>
+    <input type="email" placeholder="your@email.com">
+    <button type="button">Subscribe</button>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2026 Graham Maclin. All rights reserved.</p>
+</div>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
